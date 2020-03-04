@@ -8,13 +8,79 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.5.0'
         
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
+plugins {
+    id "java-gradle-plugin"
+    id "com.gradle.build-scan" version "2.3"
+    id "groovy"
+    id "jacoco"
+    id "com.gradle.plugin-publish" version "0.10.1"
+    id "com.github.kt3k.coveralls" version "2.5.0"
+}
+group 'org.kt3k.gradle.plugin'
+version '2.10.1'
 
-apply plugin: 'com.gradle.build-scan'
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        google()
+        mavenCentral()
+        
+    }
+}
+
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        xml.destination = file("build/foo.xml")
+    }
+}
+
+coveralls {
+    jacocoReportPath 'build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml'
+}
+
+gradlePlugin {
+    plugins {
+        coverallsPlugin {
+            id = 'com.github.kt3k.coveralls'
+            implementationClass = 'org.kt3k.gradle.plugin.CoverallsPlugin'
+        }
+    }
+}
+
+apply plugin: 'com.github.kt3k.coveralls'
+
+tasks.coveralls {
+    dependsOn 'connectedAndroidTest'
+    onlyIf { System.env.'CI' }
+}
+
+pluginBundle {
+    website = 'https://github.com/CodeFusionGroup/GradsHub/'
+    vcsUrl = 'https://github.com/CodeFusionGroup/GradsHub.git'
+    description = 'Send coverage data to coveralls.io'
+    tags = ['coverage', 'coveralls']
+
+    plugins {
+        coverallsPlugin {
+            displayName = 'Coveralls Gradle Plugin'
+        }
+    }
+}
+
+buildScan {
+    termsOfServiceUrl   = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+}
+
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
     licenseAgree = 'yes'
