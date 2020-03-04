@@ -64,8 +64,8 @@ tasks.coveralls {
 }
 
 pluginBundle {
-    website = 'https://github.com/CodeFusionGroup/GradsHub/'
-    vcsUrl = 'https://github.com/CodeFusionGroup/GradsHub.git'
+    website = 'https://github.com/sizxle/try-again/'
+    vcsUrl = 'https://github.com/sizxle/try-again.git'
     description = 'Send coverage data to coveralls.io'
     tags = ['coverage', 'coveralls']
 
